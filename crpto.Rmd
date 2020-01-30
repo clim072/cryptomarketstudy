@@ -1,0 +1,538 @@
+
+---
+fontsize: 22pt
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+  word_document:
+    toc: yes
+  pdf_document:  
+    toc: yes
+    toc_depth: 3
+font-family: Arial
+theme: united
+title: '**Dark market analysis**'
+---
+<hr>
+<br>
+
+
+<style>
+  
+#TOC {
+ position: fixed;
+  left: 0;
+  top: 0;
+  width: 250px;
+  height: 100%;
+  overflow:auto;
+}
+body {
+  max-width: 1200px;
+  margin: auto;
+  margin-left:150px;
+  line-height: 20px;
+}
+h1.title {
+    font-size: 28px;
+}
+h4 {
+    font-size: 20px;
+}
+h3 {
+    font-size: 24px;
+}
+h2 {
+    font-size: 25px;
+}
+h1 {
+    font-size: 26px;
+}
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 28%;
+}
+.table {
+    width: 40%;
+}
+
+.btn {
+    border-width: 0 0px 0px 0px;
+    font-weight: normal;
+    text-transform: ;
+}
+.btn-default {
+    color: #2ecc71;
+    background-color: #ffffff;
+    border-color: #ffffff;
+}
+</style>
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#setwd("/Users/carmenlim/Dropbox/PhD/Cryptomarket/1_Dataset")
+library(DT)
+library(ggplot2)
+library(knitr)
+library(dplyr)
+library(kableExtra)
+library(plotly)
+ 
+cry <- read.csv("cryptonia1.csv")
+arg <- read.csv("agartha.csv")
+toc <- read.csv("tochka.csv")
+```
+
+# 1. Cryptonia market
+<hr>
+<br>
+
+- Established March/April 2019
+- 12,600 drug listings
+- 515 potential eliquid and vaping related listings
+
+<br>
+<br>
+
+## Data Cleaning
+<hr>
+<br>
+
+- `r 515 - nrow(cry)` listings were removed (e.g. if the description did not mention about the product to be used for vaping purposes)
+- Total number of listings used in descriptive analysis below:  `r nrow(cry)`
+
+<br>
+<br>
+
+## Results
+
+<br>
+<br>
+<br>
+
+
+### Dataset
+<hr>
+<br>
+
+```{r, echo = FALSE}
+datatable(cry[,c(1:2,4:5,9,10)])
+```
+
+<br>
+<br>
+
+### Number of vendors
+<hr>
+<br>
+
+- Range of listings: (1-40)
+- number of vendors: 94
+- mean number of listings: 4.8 per seller
+
+<br>
+<br>
+
+```{r , echo=FALSE}
+q<- cry %>%  count(vendor,sort=TRUE)  
+q
+
+#w<- cry %>% group_by(vendor) %>% summarize(count=n())
+#w
+
+```
+<br>
+<br>
+
+```{r, echo = FALSE}
+ggplot(data = q, mapping= aes (x = n)) +
+  geom_histogram(binwidth = 0.5)
+```
+
+
+### Types of products sold  
+<hr>
+<br>
+
+
+```{r , echo=FALSE}
+p <- cry %>%
+  group_by(type.of.product) %>%
+  summarise(n = n())
+
+q<- ggplot(data = cry) + 
+  geom_bar(mapping = aes(type.of.product)) + 
+  ylim(0,200) + 
+  xlab(" ")
+mytext=paste("No = ", p$n, "\n", sep = "")  
+style( ggplotly(q), text=mytext, hoverinfo = "text" )
+```
+
+### Listing categories 
+<hr>
+<br>
+
+```{r , echo=FALSE}
+p <- cry %>%
+  group_by(drug.cat) %>%
+  summarise(n = n())
+
+q<- ggplot(data = cry) + 
+  geom_bar(mapping = aes(drug.cat)) + 
+  coord_flip() +
+  xlab(" ")
+mytext=paste("No = ", p$n, "\n", sep = "")  
+style( ggplotly(q), text=mytext, hoverinfo = "text" )
+```
+
+
+### Origin of products
+<hr>
+<br>
+
+
+```{r , echo=FALSE}
+p <- cry %>%
+  group_by(origin) %>%
+  summarise(n = n())
+
+q<- ggplot(data = cry) + 
+  geom_bar(mapping = aes(origin)) + 
+  coord_flip() +
+  xlab(" ")
+mytext=paste("No = ", p$n, "\n", sep = "")  
+style( ggplotly(q), text=mytext, hoverinfo = "text" )
+```
+
+
+### Shipping destination
+<hr>
+<br>
+<br>
+
+
+```{r , echo=FALSE}
+p <- cry %>%
+  group_by(destination) %>%
+  summarise(n = n())
+
+q<-ggplot(data = cry) + 
+  geom_bar(mapping = aes(destination)) + 
+  coord_flip() +
+  xlab(" ")
+mytext=paste("No = ", p$n, "\n", sep = "")  
+style( ggplotly(q), text=mytext, hoverinfo = "text" )
+```
+
+<br>
+<br>
+<br>
+
+# 2. Agartha market
+<hr>
+<br>
+
+- Agartha Market is an Agora clone
+- Established March/April 2019
+- Most dangerous and deadly drugs are banned. 
+- Banned products: Fentanyl, Heroin, Crystal Meth, Crack, MDPV, DNP, Scopalamine or synthetic THC/spice
+- There are lots of synthetic stuff in this market
+- ~70k drug listings (need to check)
+- 1602 potential eliquid and vaping related listings
+
+<br>
+<br>
+
+
+## Data Cleaning
+<hr>
+<br>
+
+- `r 1602 - nrow(arg)` listings were removed (e.g. if the description did not mention about the product to be used for vaping purposes)
+- Total number of listings used in descriptive analysis below:  `r nrow(arg)`
+
+<br>
+<br>
+
+
+## Results
+
+<br>
+<br>
+<br>
+
+
+### Dataset
+<hr>
+<br>
+
+```{r, echo = FALSE}
+datatable(arg[,c(2,4,10, 7,5:6)])
+```
+
+<br>
+<br>
+
+
+### Number of vendors
+<hr>
+<br>
+
+- Range of listings: 1-195
+- number of vendors: 92
+- mean number of listings: 15.9 per seller
+
+<br>
+<br>
+
+```{r , echo=FALSE}
+q<- arg %>%  count(vendor,sort=TRUE)  
+q
+
+```
+<br>
+<br>
+
+```{r, echo = FALSE}
+ggplot(data = q, mapping= aes (x = n)) +
+  geom_histogram(binwidth = 0.5)
+```
+
+
+### Types of products sold  
+<hr>
+<br>
+
+
+```{r , echo=FALSE}
+p <- arg %>%
+  group_by(type.of.product) %>%
+  summarise(n = n())
+
+q<- ggplot(data = arg) + 
+  geom_bar(mapping = aes(type.of.product)) + 
+  #ylim(0,200) + 
+  xlab(" ")
+mytext=paste("No = ", p$n, "\n", sep = "")  
+style( ggplotly(q), text=mytext, hoverinfo = "text" )
+```
+
+
+### Listing categories 
+<hr>
+<br>
+
+```{r , echo=FALSE}
+p <- arg %>%
+  group_by(drug.detail) %>%
+  summarise(n = n())
+
+q<- ggplot(data = arg) + 
+  geom_bar(mapping = aes(drug.detail)) + 
+  coord_flip() +
+  xlab(" ")
+mytext=paste("No = ", p$n, "\n", sep = "")  
+style( ggplotly(q), text=mytext, hoverinfo = "text" )
+```
+
+
+
+### Origin of products
+<hr>
+<br>
+
+```{r , echo=FALSE}
+p <- arg %>%
+  group_by(origin) %>%
+  summarise(n = n())
+
+q<- ggplot(data = arg) + 
+  geom_bar(mapping = aes(origin)) + 
+  coord_flip() +
+  xlab(" ")
+mytext=paste("No = ", p$n, "\n", sep = "")  
+style( ggplotly(q), text=mytext, hoverinfo = "text" )
+```
+
+
+### Shipping destination
+<hr>
+<br>
+<br>
+
+
+```{r , echo=FALSE}
+p <- arg %>%
+  group_by(destination) %>%
+  summarise(n = n())
+
+q<-ggplot(data = arg) + 
+  geom_bar(mapping = aes(destination)) + 
+  coord_flip() +
+  xlab(" ")
+mytext=paste("No = ", p$n, "\n", sep = "")  
+style( ggplotly(q), text=mytext, hoverinfo = "text" )
+```
+
+<br>
+<br>
+<br>
+
+
+
+# 3. Tochka market
+<hr>
+<br>
+
+- Established 2015
+- ~4k drug listings
+- 88 potential eliquid and vaping related listings
+
+<br>
+<br>
+
+
+
+
+## Data Cleaning
+<hr>
+<br>
+
+- `r 88 - nrow(toc)` listings were removed (e.g. if the description did not mention about the product to be used for vaping purposes)
+- Total number of listings used in descriptive analysis below:  `r nrow(toc)`
+
+<br>
+<br>
+
+## Results
+
+<br>
+<br>
+<br>
+
+
+### Dataset
+<hr>
+<br>
+
+
+```{r, echo = FALSE}
+datatable(toc[,c(2,4,8,7,5,6)])
+```
+
+<br>
+<br>
+
+
+
+### Number of vendors
+<hr>
+<br>
+
+- Range of listings: 1-21
+- number of vendors: 20
+- mean number of listings: 4.1 per seller
+
+<br>
+<br>
+
+```{r , echo=FALSE}
+q<- toc %>%  count(vendor,sort=TRUE)  
+q
+
+```
+<br>
+<br>
+
+```{r, echo = FALSE}
+ggplot(data = q, mapping= aes (x = n)) +
+  geom_histogram(binwidth = 0.5)
+```
+
+
+
+### Types of products sold  
+<hr>
+<br>
+
+
+```{r , echo=FALSE}
+p <- toc %>%
+  group_by(type.of.product) %>%
+  summarise(n = n())
+
+q<- ggplot(data = toc) + 
+  geom_bar(mapping = aes(type.of.product)) + 
+  #ylim(0,200) + 
+  xlab(" ")
+mytext=paste("No = ", p$n, "\n", sep = "")  
+style( ggplotly(q), text=mytext, hoverinfo = "text" )
+```
+
+
+### Listing categories 
+<hr>
+<br>
+
+```{r , echo=FALSE}
+p <- toc %>%
+  group_by(drug.category) %>%
+  summarise(n = n())
+
+q<- ggplot(data = toc) + 
+  geom_bar(mapping = aes(drug.category)) + 
+  coord_flip() +
+  xlab(" ")
+mytext=paste("No = ", p$n, "\n", sep = "")  
+style( ggplotly(q), text=mytext, hoverinfo = "text" )
+```
+
+
+
+### Origin of products
+<hr>
+<br>
+
+```{r , echo=FALSE}
+p <- toc %>%
+  group_by(origin) %>%
+  summarise(n = n())
+
+q<- ggplot(data = toc) + 
+  geom_bar(mapping = aes(origin)) + 
+  coord_flip() +
+  xlab(" ")
+mytext=paste("No = ", p$n, "\n", sep = "")  
+style( ggplotly(q), text=mytext, hoverinfo = "text" )
+```
+
+
+### Shipping destination
+<hr>
+<br>
+<br>
+
+
+```{r , echo=FALSE}
+p <- toc %>%
+  group_by(destination) %>%
+  summarise(n = n())
+
+q<-ggplot(data = toc) + 
+  geom_bar(mapping = aes(destination)) + 
+  coord_flip() +
+  xlab(" ")
+mytext=paste("No = ", p$n, "\n", sep = "")  
+style( ggplotly(q), text=mytext, hoverinfo = "text" )
+```
+
+<br>
+<br>
+<br>
+
+ 
